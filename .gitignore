@@ -1,0 +1,35 @@
+
+# Python virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Freddie Mac raw and processed datasets
+data/raw/
+data/processed/
+data/temp/
+
+# DuckDB database and temporary files
+*.duckdb
+*.duckdb.wal
+*.db.tmp/
+
+# Logs
+*.log
+
+# VS Code local settings
+.vscode/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
