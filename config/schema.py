@@ -23,15 +23,18 @@ PERFORMANCE_COLUMNS = [
 ]
 
 # Verified field positions (1-based)
+
 ORIGINATION_FIELDS = {
     "credit_score": 1,
     "first_payment_date": 2,
-    "original_ltv": 9,
+    "original_cltv": 9,
     "original_dti": 10,
     "original_upb": 11,
+    "original_ltv": 12,
     "original_interest_rate": 13,
     "loan_sequence_number": 20,
 }
+
 
 PERFORMANCE_FIELDS = {
     "loan_sequence_number": 1,
