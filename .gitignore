@@ -1,0 +1,11 @@
+
+@'
+.venv/
+data/raw/
+data/processed/
+data/temp/
+__pycache__/
+*.pyc
+*.duckdb
+.ipynb_checkpoints/
+'@ | Set-Content .gitignore
