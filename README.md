@@ -20,6 +20,30 @@ The project covers:
 
 The outcome serves as a serious-delinquency proxy for default. The target definition remains provisional and should not be interpreted as a validated production Probability of Default (PD) measure.
 
+
+## Governance & Control Outcomes
+
+This project demonstrates how quantitative analysis can
+support risk oversight, control assessment, issue
+management, and documented model-use decisions.
+
+| Governance Activity | Evidence and Outcome |
+|---|---|
+| Data Quality Controls | Validated loan identifiers, reporting dates, duplicate records, and data reconciliation |
+| Risk Identification | Documented five model validation findings |
+| Issue Prioritization | Assigned proposed remediation priorities and tracked unresolved issues |
+| Reporting & Analysis | Compared predicted versus observed risk and identified material Q4 underprediction |
+| Governance Assessment | Evaluated model limitations and documented a production-use recommendation |
+| Remediation Planning | Proposed corrective actions and requirements for future reconsideration |
+
+**Key governance decision:** Despite useful discriminatory
+performance, neither model was recommended for production
+probability estimation because of material calibration
+and methodology limitations.
+
+**[Read the Executive Risk Assessment](docs/executive_risk_assessment.md)**
+
+
 ## Project Results
 
 ### Dataset
@@ -151,6 +175,7 @@ The models are not production-approved. Governance procedures are research propo
 
 | Documentation | Description |
 |---|---|
+| [Executive Risk Assessment](docs/executive_risk_assessment.md) | Management-level summary of key risks, validation findings, priorities, and recommended actions |
 | [Model Development](docs/model_development.md) | Modeling population, features, preprocessing, algorithms, validation results, and interpretability |
 | [Model Validation](docs/model_validation.md) | Population analysis, sensitivity testing, stability diagnostics, calibration, and final validation conclusions |
 | [Model Governance](docs/model_governance.md) | Model inventory, risk assessment, selection criteria, governance disposition, and remediation plan |

@@ -227,23 +227,75 @@ Good discrimination does not eliminate the need for acceptable calibration, defe
 
 No tuning or calibration adjustments were made using the reserved Q4 results.
 
-## 8. Validation Findings Register
 
-Five validation findings remain open.
+## 8. Validation Findings and Issue Tracking
 
-| ID | Finding | Priority | Status |
-|---|---|---|---|
-| MV-001 | Sensitivity to early-payoff target treatment | High | Open |
-| MV-002 | Potential modeling-population selection bias | High | Open |
-| MV-003 | Interest-rate distribution shift and segment-level calibration differences | Medium | Open |
-| MV-004 | LTV/CLTV multicollinearity and coefficient interpretability | Medium | Open |
-| MV-005 | Systematic Q4 probability underprediction | High | Open |
+Five model validation findings remain open.
 
-All findings are documented in detail in [Model Validation](model_validation.md).
+### 8.1 Findings Register
 
-The priorities shown are proposed remediation priorities for the research project, not ratings issued by an independent model risk management function.
+| ID | Finding | Priority | Proposed Responsible Function | Target Date | Status |
+|---|---|---|---|---|---|
+| MV-001 | Early-payoff target sensitivity | High | Model Development | TBD | Open |
+| MV-002 | Modeling-population selection bias | High | Model Development / Data Management | TBD | Open |
+| MV-003 | Interest-rate distribution shift | Medium | Model Development / Model Monitoring | TBD | Open |
+| MV-004 | LTV/CLTV multicollinearity | Medium | Model Development | TBD | Open |
+| MV-005 | Systematic Q4 probability underprediction | High | Model Development / Model Owner | TBD | Open |
 
-An open finding indicates that the issue has been identified but not satisfactorily resolved.
+### 8.2 Remediation and Closure Evidence
+
+The following evidence would be required to support
+closure consideration for each finding.
+
+| ID | Proposed Remediation | Required Closure Evidence |
+|---|---|---|
+| MV-001 | Finalize early-payoff treatment and target methodology | Documented target definition, competing-risk assessment, and sensitivity results |
+| MV-002 | Investigate exclusions and population representativeness | Population analysis, eligibility rationale, and quantified impact assessment |
+| MV-003 | Assess interest-rate shifts and cohort stability | Distribution diagnostics, segment-performance analysis, and robustness results |
+| MV-004 | Review correlated features and coefficient stability | Feature-selection rationale, coefficient sensitivity results, and segment calibration |
+| MV-005 | Investigate systematic underprediction and revise calibration methodology | Documented root-cause assessment and satisfactory independent calibration evidence |
+
+### 8.3 Issue Management Principles
+
+- Findings remain open until supported by appropriate
+  remediation and review evidence.
+- Proposed responsible functions represent hypothetical
+  organizational roles, not actual assigned owners.
+- Target dates remain TBD because remediation work has
+  not been scheduled.
+- Closure should require documented evidence that the
+  underlying issue has been adequately addressed.
+- High-priority findings should receive greater attention
+  in any future remediation plan.
+- Material model-use limitations should remain documented
+  until the relevant concerns are satisfactorily addressed.
+
+### 8.4 Current Findings Status
+
+**Total Findings:** 5
+
+**High Priority:** 3
+
+**Medium Priority:** 2
+
+**Open:** 5
+
+**Closed:** 0
+
+**Remediation Completed:** None
+
+Priorities are proposed research remediation priorities,
+not institutionally assigned risk ratings.
+
+No formal issue ownership, deadline, approval, or closure
+decision has been established in this individual project.
+
+Detailed quantitative evidence is available in
+[Model Validation](model_validation.md).
+
+Proposed corrective actions are summarized in
+Section 9 — Remediation Action Plan.
+
 
 ## 9. Remediation Action Plan
 
