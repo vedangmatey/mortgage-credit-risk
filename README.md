@@ -12,11 +12,13 @@ The objective is to develop a **Probability of Default (PD) model**, perform ind
 ## Explore the Project
 
 
-| Section | Description |
+
+| Section | What You'll Find |
 |---|---|
-| [Model Development](docs/model_development.md) | Data preparation, feature engineering, model training, and performance |
-| [Model Validation](docs/model_validation.md) | Population analysis, sensitivity testing, calibration, and validation findings |
-| Model Governance | Coming soon |
+| [Model Development](docs/model_development.md) | Data preparation, feature engineering, Logistic Regression, Random Forest, XGBoost, and model performance |
+| [Model Validation](docs/model_validation.md) | Population bias, sensitivity testing, calibration, feature stability, and validation findings |
+| [Model Governance](docs/model_governance.md) | Model inventory, risk assessment, findings register, approval considerations, and monitoring framework |
+
 
 
 ## Baseline Model — Logistic Regression
@@ -80,7 +82,7 @@ The original data and generated datasets are excluded from this repository. User
 | 2. Target Development | Define serious delinquency outcomes and observation eligibility | In Progress |
 | 3. Model Development | Feature engineering, logistic regression, model evaluation | Planned |
 | 4. Model Validation | Independent testing, discrimination, calibration, sensitivity analysis | Planned |
-| 5. Model Governance | Model documentation, risk assessment, monitoring framework | Planned |
+| 5. Model Governance | Model inventory, risk assessment, monitoring and approval framework | In Progress |
 
 ## Technology Stack
 

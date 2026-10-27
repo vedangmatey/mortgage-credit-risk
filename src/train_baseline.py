@@ -324,3 +324,66 @@ print("\n========== MODEL FIGURES ==========")
 print("ROC curve       : logistic_roc.png")
 print("Calibration plot: logistic_calibration.png")
 print("Figures saved to:", FIGURES)
+
+
+# Step 124 — Validation calibration by interest rate
+
+rate_validation = pd.DataFrame({
+    "interest_rate": validation["interest_rate"].to_numpy(),
+    "actual": y_validation.to_numpy(),
+    "predicted_pd": validation_probabilities
+})
+
+# Use fixed interest-rate ranges
+rate_validation["rate_group"] = pd.cut(
+    rate_validation["interest_rate"],
+    bins=[
+        float("-inf"),
+        5.875,
+        6.25,
+        6.50,
+        6.75,
+        float("inf")
+    ],
+    labels=[
+        "<= 5.875%",
+        "5.875-6.25%",
+        "6.25-6.50%",
+        "6.50-6.75%",
+        "> 6.75%"
+    ]
+)
+
+rate_summary = (
+    rate_validation.groupby(
+        "rate_group",
+        observed=True
+    )
+    .agg(
+        mortgages=("actual", "size"),
+        actual_event_rate=("actual", "mean"),
+        predicted_pd=("predicted_pd", "mean")
+    )
+    .reset_index()
+)
+
+rate_summary["actual_event_rate"] *= 100
+rate_summary["predicted_pd"] *= 100
+
+rate_summary["difference_pp"] = (
+    rate_summary["predicted_pd"]
+    - rate_summary["actual_event_rate"]
+)
+
+print("\n========== INTEREST RATE CALIBRATION ==========")
+
+print(
+    rate_summary.to_string(
+        index=False,
+        float_format=lambda x: f"{x:.2f}"
+    )
+)
+
+assert rate_summary["mortgages"].sum() == len(validation)
+
+print("\nInterest rate calibration: PASSED")
