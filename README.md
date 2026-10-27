@@ -8,6 +8,53 @@ The objective is to develop a **Probability of Default (PD) model**, perform ind
 
 **Project Status:** In Progress — Data ingestion and initial integrity validation completed.
 
+
+## Explore the Project
+
+| Section | Description |
+|---|---|
+| [Model Development](docs/model_development.md) | Data preparation, feature engineering, modeling methodology, and results |
+| Model Validation | Coming soon |
+| Model Governance | Coming soon |
+
+## Baseline Model — Logistic Regression
+
+**Status:** Preliminary validation completed
+
+The baseline model uses six mortgage origination
+characteristics to predict serious delinquency
+within a 24-month observation horizon.
+
+### Validation Results
+
+| Metric | Result |
+|---|---:|
+| ROC-AUC | 0.7810 |
+| Average Precision | 0.2488 |
+| Brier Score | 0.0696 |
+| Actual Event Rate | 8.35% |
+| Average Predicted PD | 8.25% |
+
+### Model Performance
+
+**ROC Curve — Discriminatory Power**
+
+![Logistic Regression ROC Curve](reports/figures/logistic_roc.png)
+
+**Calibration — Predicted vs. Observed Risk**
+
+![Logistic Regression Calibration](reports/figures/logistic_calibration.png)
+
+For preprocessing decisions, coefficient interpretation,
+and model limitations, see the
+[Model Development Documentation](docs/model_development.md).
+
+> **Research limitation:** These results are based on
+> a preliminary target definition and the 2007 Q3
+> validation cohort. Independent validation and
+> final model testing are not yet complete.
+
+
 ## Business Objective
 
 Estimate the likelihood that a mortgage becomes seriously delinquent (90+ days past due) within a defined 24-month observation horizon.
