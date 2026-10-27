@@ -1,173 +1,264 @@
-
 # Final Model Evaluation Protocol
 
 [← Back to Project Overview](../README.md)
 
-**Status:** Defined before Q4 evaluation
+**Project:** Mortgage Credit Risk — Model Development, Validation & Governance\
+**Status:** Final held-out evaluation completed\
+**Evaluation Cohort:** 2007 Q4\
+**Production Recommendation:** Not recommended
 
-## 1. Objective
+## 1. Evaluation Objective
 
-Evaluate the selected mortgage credit risk models on
-the reserved 2007 Q4 test cohort without modifying
-model specifications based on test results.
+Evaluate the selected mortgage credit risk models on a reserved test population to assess discrimination, probability calibration, and generalization to a later 2007 origination cohort.
 
-This is a research evaluation, not production approval.
+The protocol separates model-selection decisions made before testing from the performance findings obtained afterward.
 
-## 2. Primary Target Definition
+The evaluation is intended for research and methodological assessment, not production model approval.
 
-The primary evaluation uses the original
-24-month serious-delinquency target.
+## 2. Data Partitioning and Target Definition
 
-- Event: Observed numeric delinquency status 03–98
-  within 24 scheduled payment months.
-- Non-event: Complete 24-month reporting with no
-  qualifying serious-delinquency or flagged special status.
-- Unresolved outcomes: Excluded.
+### 2.1 Data Partitioning
 
-This target remains provisional. In particular,
-sample selection and early-payoff treatment may affect
-the interpretation of predicted probabilities.
+| Dataset | Cohort | Mortgages | Purpose |
+|---|---|---:|---|
+| Training | 2007 Q1–Q2 | 488,486 | Model fitting |
+| Validation | 2007 Q3 | 188,212 | Model selection and configuration |
+| Final Test | 2007 Q4 | 211,425 | Held-out evaluation |
 
-## 3. Frozen Model Specifications
+The cohorts were separated chronologically by mortgage origination quarter.
 
-### Candidate A: XGBoost
+Because all mortgages originated in 2007, the test does not establish generalization across different origination years or economic environments.
 
-- Six origination-time features
-- Training population: 2007 Q1–Q2
-- Median imputation fitted on training only
-- Max depth: 4
-- Learning rate: 0.05
-- Min child weight: 20
-- Subsample: 0.8
-- Column sample: 0.9
-- L2 regularization: 5
-- Best boosting round selected on Q3: 213
-- Random seed: 42
+### 2.2 Primary Target Definition
 
-### Candidate B: Logistic Regression
+The primary evaluation used the original provisional 24-month serious-delinquency outcome.
 
-- Five origination-time features
-- CLTV excluded
-- Median imputation fitted on training only
-- Standardization fitted on training only
-- Solver: lbfgs
-- Maximum iterations: 1000
+- **Event:** An observed qualifying numeric delinquency status (03–98) within the first 24 scheduled payment months.
+- **Complete non-event:** Complete eligible observation history without a qualifying event.
+- **Unresolved outcome:** Excluded from the primary modeling population.
+- **Special-status review:** Excluded pending further assessment.
 
-The original six-feature Logistic Regression remains
-available as a reference model.
+This target is a research proxy for mortgage default, not an established production probability-of-default definition.
 
-## 4. Final Test Population
+### 2.3 Target Limitations
 
-- Origination cohort: 2007 Q4
-- Preliminary eligible mortgages: 211,425
-- Observed serious-delinquency events: 20,176
+The original population excludes mortgages with incomplete observation histories, including eligible early payoffs.
 
-Q4 has not been used for model training, feature
-selection, hyperparameter tuning, or early stopping.
+Alternative early-payoff treatment was investigated during validation, but it was not substituted into the primary final-test definition.
 
-## 5. Evaluation Metrics
+The two approaches represent different target and population assumptions and should not be directly mixed when interpreting their performance.
 
-The following will be reported for each candidate:
+Detailed sensitivity findings are maintained in [Model Validation](model_validation.md).
 
-- ROC-AUC
-- Average Precision
-- Brier Score
-- Actual event rate
-- Average predicted probability
-- Calibration across risk deciles
-- Material segment-level performance differences
+## 3. Pre-Test Model Selection
 
-All models will be assessed on the same primary
-Q4 population.
+The following candidate specifications and evaluation criteria were established before examining the reserved Q4 test results.
 
-## 6. Decision Rules
+### 3.1 Candidate A — XGBoost
 
-Model selection will consider discrimination,
-calibration, stability, complexity, interpretability,
-and unresolved validation findings.
+| Parameter | Specification |
+|---|---|
+| Algorithm | XGBoost Classifier |
+| Input Features | Six origination-time characteristics |
+| Training Population | 2007 Q1–Q2 |
+| Missing Data | Training-fitted median imputation |
+| Maximum Tree Depth | 4 |
+| Learning Rate | 0.05 |
+| Minimum Child Weight | 20 |
+| Subsample | 0.80 |
+| Column Subsample | 0.90 |
+| L2 Regularization | 5 |
+| Boosting Rounds for Final Evaluation | 213 |
+| Random Seed | 42 |
 
-Small metric differences alone will not establish
-superiority.
+The boosting-round count was selected using Q3 validation evidence before the final Q4 evaluation.
 
-No hyperparameters, features, target rules, or
-preprocessing methods will be changed based on Q4
-results.
+### 3.2 Candidate B — Logistic Regression
 
-If material issues emerge, they will be documented
-as limitations rather than tuned away on the test set.
+| Parameter | Specification |
+|---|---|
+| Algorithm | Logistic Regression |
+| Input Features | Five origination-time characteristics |
+| Excluded Feature | Original CLTV |
+| Training Population | 2007 Q1–Q2 |
+| Missing Data | Training-fitted median imputation |
+| Scaling | Training-fitted StandardScaler |
+| Solver | `lbfgs` |
+| Maximum Iterations | 1,000 |
 
-## 7. Separate Sensitivity Analysis
+The reduced five-feature specification was selected for its interpretability and performance comparable to the original six-feature baseline.
 
-The payoff-inclusive alternative target will be
-evaluated separately, if warranted.
+The original six-feature Logistic Regression and Random Forest remained development benchmarks rather than prioritized final-test candidates.
 
-Its results must be clearly distinguished from the
-primary evaluation because its eligible population
-and outcome interpretation differ.
+## 4. Pre-Test Evaluation Criteria
 
-## 8. Approval Status
+Final assessment was designed to consider the following measures.
 
-No production deployment or regulatory use is intended.
+| Evaluation Area | Metric or Assessment |
+|---|---|
+| Discrimination | ROC-AUC |
+| Event Identification | Average Precision |
+| Probability Accuracy | Brier Score |
+| Portfolio Calibration | Average predicted versus observed event rate |
+| Risk-Segment Calibration | Predicted versus observed rates across risk deciles |
+| Interpretability | Model complexity and explanatory transparency |
+| Robustness | Previously documented sensitivity and stability findings |
+| Governance | Material limitations and unresolved validation findings |
 
-The final research assessment will report model
-performance, open findings, limitations, and
-recommendations without implying production approval.
+No single metric would automatically establish model superiority or production suitability.
 
+### 4.1 Evaluation Controls
 
-## 9. Final Q4 Evaluation Results
+The protocol required that:
 
-The frozen model specifications were evaluated on
-the reserved 2007 Q4 cohort.
+1. Candidate model specifications be frozen before Q4 testing.
+2. Both candidates use the same primary Q4 evaluation population.
+3. Preprocessing transformations be fitted using training data only.
+4. Q4 data not be used for feature selection, hyperparameter tuning, or early stopping.
+5. Material performance weaknesses be reported.
+6. Q4 results not be used to recalibrate or optimize the evaluated models.
+7. The final research assessment consider performance and unresolved model risks together.
 
-### Evaluation Population
+## 5. Final Q4 Evaluation Population
 
-| Metric | Value |
+The frozen candidate models were evaluated on eligible mortgages from the 2007 Q4 origination cohort.
+
+| Measure | Value |
 |---|---:|
 | Test Mortgages | 211,425 |
-| Observed Events | 20,176 |
+| Observed Serious-Delinquency Events | 20,176 |
 | Observed Event Rate | 9.54% |
 
-### Model Performance
+The two models were evaluated on the same primary test population.
 
-| Metric | Logistic Regression | XGBoost |
+## 6. Final Model Performance
+
+| Metric | Five-Feature Logistic Regression | XGBoost |
 |---|---:|---:|
-| ROC-AUC | 0.7906 | 0.7956 |
-| Average Precision | 0.2910 | 0.3073 |
-| Brier Score | 0.0783 | 0.0774 |
-| Average Predicted Event Probability | 6.39% | 6.39% |
+| ROC-AUC | 0.7906 | **0.7956** |
+| Average Precision | 0.2910 | **0.3073** |
+| Brier Score | 0.0783 | **0.0774** |
+| Average Predicted Event Rate | 6.39% | 6.39% |
+| Observed Event Rate | 9.54% | 9.54% |
 
-### Evaluation Findings
+### 6.1 Discrimination
 
-XGBoost demonstrated stronger discrimination and a
-lower Brier Score than the five-feature Logistic
-Regression model.
+XGBoost achieved higher ROC-AUC and Average Precision than the five-feature Logistic Regression model.
 
-However, both models materially underestimated
-the observed portfolio-level event rate.
+This indicates stronger discrimination on the Q4 test population.
 
-The observed event rate was 9.54%, compared with
-average predicted probabilities of approximately
-6.39% for both models.
+However, the differences alone do not establish statistical superiority or suitability for operational credit risk estimation.
 
-This represents an underestimation of approximately
-3.15 percentage points.
+### 6.2 Probability Calibration
 
-### Preliminary Validation Conclusion
+Both models predicted an average event probability of approximately 6.39%, compared with an observed event rate of 9.54%.
 
-XGBoost is the stronger candidate based on final
-discrimination and Brier Score.
+The portfolio-level underprediction was approximately **3.15 percentage points**.
 
-However, the substantial underprediction raises a
-material calibration concern.
+Although XGBoost achieved a slightly lower Brier Score, both models showed material calibration deficiencies.
 
-The models are not considered suitable for
-production use based on these results.
+## 7. Risk-Decile Calibration Assessment
 
-No tuning, feature changes, or calibration
-adjustments were performed using Q4.
+The final assessment compared predicted and observed event rates across ten equally sized risk groups for each model.
 
-Further descriptive analysis will examine whether
-underprediction occurs consistently across risk
-deciles or is concentrated in particular segments.
+Risk deciles were constructed independently based on each model's predicted probabilities.
 
-**Final research-model assessment: Pending.**
+### 7.1 Calibration Error by Decile
+
+Errors are measured in percentage points as:
+
+**Calibration Error = Predicted Event Rate − Observed Event Rate**
+
+Negative values indicate underprediction.
+
+| Risk Decile | Logistic Regression Error (pp) | XGBoost Error (pp) |
+|---|---:|---:|
+| 1 | -0.04 | -0.22 |
+| 2 | -0.29 | -0.63 |
+| 3 | -0.68 | -1.07 |
+| 4 | -1.21 | -1.41 |
+| 5 | -2.09 | -1.94 |
+| 6 | -3.39 | -3.08 |
+| 7 | -4.29 | -3.71 |
+| 8 | -5.51 | -4.66 |
+| 9 | -7.07 | -6.36 |
+| 10 | -6.95 | -8.45 |
+
+### 7.2 Highest-Risk Decile
+
+| Measure | Logistic Regression | XGBoost |
+|---|---:|---:|
+| Observed Event Rate | 32.63% | 33.76% |
+| Average Predicted Event Rate | 25.68% | 25.31% |
+| Underprediction | 6.95 pp | 8.45 pp |
+
+Both models underestimated observed risk across every decile.
+
+The absolute calibration discrepancies were generally larger in the higher-risk segments.
+
+XGBoost had stronger overall discrimination but a larger underprediction in its highest-risk decile.
+
+These results highlight the distinction between the ability to rank mortgages by risk and the ability to estimate reliable event probabilities.
+
+Complete calibration evidence is documented in [Model Validation](model_validation.md).
+
+## 8. Final Evaluation Findings
+
+The evaluation established three central conclusions.
+
+**First, XGBoost demonstrated stronger discrimination.**
+
+XGBoost achieved the highest Q4 ROC-AUC and Average Precision among the two frozen candidate models.
+
+**Second, probability calibration was materially deficient.**
+
+Both models underestimated the observed Q4 portfolio event rate and showed underprediction throughout their risk-decile distributions.
+
+**Third, predictive performance must be evaluated alongside model assumptions.**
+
+The target definition, early-payoff treatment, population eligibility, feature stability, and temporal generalizability remain important limitations.
+
+The final-test evidence supports validation finding **MV-005 — Systematic Q4 Probability Underprediction**, which remains open.
+
+No model specification, feature, or calibration adjustment was made using Q4 results.
+
+## 9. Final Research-Model Assessment
+
+### 9.1 Comparative Assessment
+
+**XGBoost:** Stronger research candidate for ranking mortgages by observed serious-delinquency risk.
+
+**Five-feature Logistic Regression:** Interpretable benchmark with relatively similar discrimination.
+
+Neither model demonstrated sufficiently reliable absolute probabilities for production credit risk estimation.
+
+### 9.2 Validation and Governance Status
+
+| Assessment Item | Status |
+|---|---|
+| Final held-out evaluation | Completed |
+| Q4 discrimination analysis | Completed |
+| Q4 portfolio calibration analysis | Completed |
+| Q4 risk-decile calibration analysis | Completed |
+| Post-test model tuning | Not performed |
+| Outstanding validation findings | Five open |
+| Production recommendation | Not recommended |
+| Formal production approval | Not granted |
+
+### 9.3 Final Disposition
+
+**Final research assessment: Completed with material limitations.**
+
+**Production recommendation: Not recommended for production probability estimation.**
+
+Future model development should address target-definition assumptions, early-payoff treatment, population-selection risks, probability calibration, and generalization across different economic periods.
+
+Any revised models should be assessed using an appropriately designed development process and new independent evaluation data.
+
+The Q4 results will remain final held-out evaluation evidence for the frozen specifications and will not be used to optimize those evaluated models.
+
+The detailed disposition and proposed remediation plan are documented in [Model Governance](model_governance.md).
+
+---
+
+*This protocol documents an individual research evaluation. It does not constitute organizationally independent model validation, formal model approval, or regulatory compliance certification.*

@@ -1,126 +1,191 @@
 # Mortgage Credit Risk | Model Development, Validation & Governance
 
-## Project Overview
-
 An end-to-end mortgage credit risk modeling project using Freddie Mac's historical single-family loan-level data.
 
-The objective is to develop a **Probability of Default (PD) model**, perform independent model validation, and establish a model governance framework demonstrating sound model risk management practices.
+The project demonstrates the development, quantitative validation, and governance assessment of mortgage credit risk models, with emphasis on predictive performance, probability calibration, model limitations, and model risk management.
 
-**Project Status:** In Progress — Data ingestion and initial integrity validation completed.
+**Project Status:** Research assessment completed | Five validation findings remain open | Not recommended for production use
 
+## Project Overview
 
-## Explore the Project
+**Objective:** Estimate the likelihood of observed serious mortgage delinquency (90+ days past due) within a 24-month observation horizon.
 
+The project covers:
 
+- Processing and validating large-scale mortgage loan-level data.
+- Constructing a serious-delinquency outcome and modeling population.
+- Developing Logistic Regression, Random Forest, and XGBoost models.
+- Evaluating discrimination, calibration, feature stability, and sensitivity to modeling assumptions.
+- Documenting validation findings, governance decisions, and remediation recommendations.
 
-| Section | What You'll Find |
-|---|---|
-| [Model Development](docs/model_development.md) | Data preparation, feature engineering, Logistic Regression, Random Forest, XGBoost, and model performance |
-| [Model Validation](docs/model_validation.md) | Population bias, sensitivity testing, calibration, feature stability, and validation findings |
-| [Model Governance](docs/model_governance.md) | Model inventory, risk assessment, findings register, approval considerations, and monitoring framework |
+The outcome serves as a serious-delinquency proxy for default. The target definition remains provisional and should not be interpreted as a validated production Probability of Default (PD) measure.
 
+## Project Results
 
+### Dataset
 
-## Baseline Model — Logistic Regression
-
-**Status:** Preliminary validation completed
-
-The baseline model uses six mortgage origination
-characteristics to predict serious delinquency
-within a 24-month observation horizon.
-
-### Validation Results
-
-| Metric | Result |
+| Description | Value |
 |---|---:|
-| ROC-AUC | 0.7810 |
-| Average Precision | 0.2488 |
-| Brier Score | 0.0696 |
-| Actual Event Rate | 8.35% |
-| Average Predicted PD | 8.25% |
+| Mortgage origination records | 1,238,192 |
+| Monthly loan-performance records | 74,478,724 |
+| Primary modeling population | 888,123 |
+| Observed serious-delinquency events | 59,785 |
+| Origination year | 2007 |
 
-### Model Performance
+**Data source:** Freddie Mac Single-Family Loan-Level Dataset.
 
-**ROC Curve — Discriminatory Power**
+### Modeling Approach
+
+| Dataset | Origination Cohort | Mortgages | Purpose |
+|---|---|---:|---|
+| Training | 2007 Q1–Q2 | 488,486 | Model development |
+| Validation | 2007 Q3 | 188,212 | Model evaluation and selection |
+| Final Test | 2007 Q4 | 211,425 | Held-out evaluation |
+
+The chronological split evaluates performance on later 2007 origination cohorts. It does not constitute testing across different origination years or economic environments.
+
+### Final Held-Out Test Results
+
+Two frozen model specifications were evaluated on the reserved 2007 Q4 cohort:
+
+- **Logistic Regression:** Five origination-time features, excluding CLTV.
+- **XGBoost:** Six origination-time features, with boosting rounds selected during validation.
+
+| Metric | Logistic Regression | XGBoost |
+|---|---:|---:|
+| ROC-AUC | 0.7906 | **0.7956** |
+| Average Precision | 0.2910 | **0.3073** |
+| Brier Score | 0.0783 | **0.0774** |
+| Average Predicted Event Rate | 6.39% | 6.39% |
+| Observed Event Rate | 9.54% | 9.54% |
+
+**Key finding:** XGBoost achieved stronger discrimination and a slightly lower Brier Score. However, both models underestimated the observed Q4 event rate by approximately **3.15 percentage points**.
+
+Underprediction occurred across all ten risk deciles for both models, with larger absolute calibration errors in higher-risk groups.
+
+The final evaluation demonstrates that useful risk-ranking performance does not necessarily imply reliable probability estimates.
+
+## Model Development
+
+Three modeling approaches were developed and compared using the original 2007 Q3 validation population.
+
+| Metric | Logistic Regression | Random Forest | XGBoost |
+|---|---:|---:|---:|
+| ROC-AUC | 0.7810 | 0.7816 | **0.7843** |
+| Average Precision | 0.2488 | 0.2518 | **0.2579** |
+| Brier Score | 0.0696 | 0.0693 | **0.0691** |
+
+The original Logistic Regression baseline used six mortgage origination characteristics:
+
+- Credit score
+- Original Loan-to-Value (LTV)
+- Original Combined LTV (CLTV)
+- Debt-to-Income (DTI)
+- Interest rate
+- Loan amount
+
+Median imputation and, where applicable, feature scaling were fitted using training data only.
+
+A feature-reduction analysis identified substantial correlation between LTV and CLTV. Removing CLTV produced comparable validation performance, supporting a simpler five-feature Logistic Regression candidate for final testing.
+
+### Baseline Model Visualizations
+
+**Logistic Regression — ROC Curve (Q3 Validation)**
 
 ![Logistic Regression ROC Curve](reports/figures/logistic_roc.png)
 
-**Calibration — Predicted vs. Observed Risk**
+**Logistic Regression — Calibration (Q3 Validation)**
 
 ![Logistic Regression Calibration](reports/figures/logistic_calibration.png)
 
-For preprocessing decisions, coefficient interpretation,
-and model limitations, see the
-[Model Development Documentation](docs/model_development.md).
+These figures represent the original six-feature Logistic Regression baseline on Q3 validation data, not the final Q4 evaluation.
 
-> **Research limitation:** These results are based on
-> a preliminary target definition and the 2007 Q3
-> validation cohort. Independent validation and
-> final model testing are not yet complete.
+## Model Validation
 
+A separate, self-conducted research validation workstream assessed model reliability and limitations.
 
-## Business Objective
+The analysis included:
 
-Estimate the likelihood that a mortgage becomes seriously delinquent (90+ days past due) within a defined 24-month observation horizon.
+- Data integrity and loan-identifier reconciliation.
+- Modeling-population representativeness.
+- Alternative early-payoff target assumptions.
+- Population Stability Index (PSI) analysis.
+- Interest-rate segment calibration.
+- LTV/CLTV multicollinearity and feature reduction.
+- Discrimination and calibration on the reserved Q4 cohort.
 
-The project will address data quality, outcome definitions, early mortgage termination, predictive performance, model limitations, and governance considerations.
+### Validation Findings
 
-## Dataset
-
-**Source:** Freddie Mac Single-Family Loan-Level Dataset  
-**Cohort:** 2007  
-**Mortgage Origination Records:** 1,238,192  
-**Monthly Performance Records:** 74,478,724
-
-The original data and generated datasets are excluded from this repository. Users must obtain the source data through Freddie Mac.
-
-## Methodology
-
-| Phase | Scope | Status |
+| Finding ID | Description | Status |
 |---|---|---|
-| 1. Data Engineering | Ingestion, Parquet conversion, data integrity checks | Completed |
-| 2. Target Development | Define serious delinquency outcomes and observation eligibility | In Progress |
-| 3. Model Development | Feature engineering, logistic regression, model evaluation | Planned |
-| 4. Model Validation | Independent testing, discrimination, calibration, sensitivity analysis | Planned |
-| 5. Model Governance | Model inventory, risk assessment, monitoring and approval framework | In Progress |
+| MV-001 | Sensitivity to early-payoff treatment | Open |
+| MV-002 | Potential modeling-population selection bias | Open |
+| MV-003 | Interest-rate distribution shift and segment-level calibration | Open |
+| MV-004 | LTV/CLTV multicollinearity and coefficient interpretability | Open |
+| MV-005 | Systematic probability underprediction in Q4 testing | Open |
+
+**Important limitations:**
+
+- The 24-month outcome definition and early-payoff treatment remain provisional.
+- Excluding incomplete observation histories may introduce selection bias.
+- Interest-rate distributions changed substantially between training and validation cohorts.
+- All origination cohorts are from 2007, limiting evidence of generalizability across economic periods.
+- Final Q4 results revealed material underprediction of observed serious-delinquency rates.
+
+This is an individual research validation exercise, not an organizationally independent model validation.
+
+## Model Governance
+
+The project includes a documented model inventory, risk assessment, model-selection framework, final test protocol, validation findings register, and proposed monitoring and remediation activities.
+
+**Final research assessment:**
+
+- **XGBoost:** Stronger candidate for research-level risk ranking.
+- **Five-feature Logistic Regression:** Interpretable benchmark.
+- **Validation disposition:** Material limitations identified; five findings remain open.
+- **Production recommendation:** Not recommended for production probability estimation.
+
+The models are not production-approved. Governance procedures are research proposals and do not represent controls operated by a financial institution.
+
+## Explore the Project
+
+| Documentation | Description |
+|---|---|
+| [Model Development](docs/model_development.md) | Modeling population, features, preprocessing, algorithms, validation results, and interpretability |
+| [Model Validation](docs/model_validation.md) | Population analysis, sensitivity testing, stability diagnostics, calibration, and final validation conclusions |
+| [Model Governance](docs/model_governance.md) | Model inventory, risk assessment, selection criteria, governance disposition, and remediation plan |
+| [Final Test Protocol](docs/final_test_protocol.md) | Frozen model specifications, Q4 evaluation methodology, and held-out test results |
 
 ## Technology Stack
 
-- **Python:** Automated data processing and modeling
-- **DuckDB and SQL:** Large-scale mortgage data analysis
-- **Parquet:** Efficient columnar data storage
-- **Git and GitHub:** Version control and reproducibility
+- **Python:** Modeling, preprocessing, and validation
+- **DuckDB and SQL:** Large-scale mortgage data processing
+- **pandas:** Data transformation and analysis
+- **scikit-learn:** Logistic Regression, Random Forest, preprocessing, and evaluation
+- **XGBoost:** Gradient-boosted decision trees
+- **Parquet:** Efficient storage of processed loan-level data
+- **Matplotlib:** Model performance visualizations
+- **Git and GitHub:** Version control and project documentation
 
-Additional dependencies will be documented as they are introduced.
+## Data Quality and Reproducibility
 
-## Data Quality Controls
+The data-processing workflow includes checks for:
 
-Initial validation of the complete 2007 cohort confirmed:
+- Unique mortgage origination identifiers.
+- Origination-to-performance loan matching.
+- Monthly reporting-date validity.
+- Duplicate loan-month records.
+- Quarterly record counts and schema consistency.
 
-| Control | Result |
-|---|---|
-| Unique origination loan identifiers | Passed |
-| Origination-to-performance identifier reconciliation | Passed |
-| Monthly reporting-date format validation | Passed |
-| Duplicate loan-month checks within quarterly files | Passed |
-| Quarterly record-count and schema checks | Passed |
+Model preprocessing is fitted on training data, with validation and held-out testing separated by origination cohort.
 
-These controls establish initial data integrity; they do not constitute full model validation.
-
-## Preliminary Research Findings
-
-The initial investigation identified **59,785 mortgages with an observed numeric serious-delinquency status (03–98) during the first 24 scheduled payment months**.
-
-This is not yet a finalized model default rate. Observation gaps, mortgage payoffs, special delinquency statuses, and target-definition limitations require further analysis.
-
-## Model Risk Management Considerations
-
-The project will document model assumptions, input data limitations, target construction, potential selection bias, validation results, and ongoing monitoring requirements.
-
-The project is intended for research, education, and portfolio demonstration. It is not a production lending decision system.
+The original Freddie Mac files and generated loan-level datasets are excluded from this repository. Source data must be obtained separately through Freddie Mac.
 
 ## References
 
-Freddie Mac — [Single-Family Loan-Level Dataset](https://www.freddiemac.com/research/datasets/sf-loanlevel-dataset)
+- [Freddie Mac — Single-Family Loan-Level Dataset](https://www.freddiemac.com/research/datasets/sf-loanlevel-dataset)
+- [Freddie Mac — General User Guide](https://www.freddiemac.com/fmac-resources/research/pdf/user_guide.pdf)
 
-Freddie Mac — [General User Guide](https://www.freddiemac.com/fmac-resources/research/pdf/user_guide.pdf)
+---
+
+**Project Scope:** Research, education, and portfolio demonstration. No production lending decisions, regulatory capital calculations, or operational credit risk reporting are supported by these models.

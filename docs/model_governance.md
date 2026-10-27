@@ -2,258 +2,362 @@
 
 [← Back to Project Overview](../README.md)
 
-**Project:** Mortgage Credit Risk — Model Development, Validation & Governance
-**Status:** In Development — Not Approved for Production
+**Project:** Mortgage Credit Risk — Model Development, Validation & Governance\
+**Status:** Final research governance assessment completed\
+**Production Recommendation:** Not recommended\
+**Outstanding Validation Findings:** Five open
 
-## 1. Model Overview and Intended Use
+## 1. Governance Objective
 
-The project develops statistical and machine learning models using Freddie Mac's 2007 single-family mortgage data to estimate the likelihood of serious delinquency (90+ days past due) within a 24-month horizon.
+Establish and document a research-oriented model governance framework for mortgage credit risk models developed using Freddie Mac's 2007 single-family mortgage data.
 
-The models are intended for research, methodology evaluation, and demonstration of model risk management practices.
+The framework addresses:
 
-**Out-of-scope uses:** Actual lending decisions, borrower eligibility determination, regulatory capital calculations, and production credit risk reporting.
+- Model inventory and intended use.
+- Model ownership and accountability.
+- Model risk identification and assessment.
+- Model development and validation controls.
+- Model selection and testing decisions.
+- Validation findings and remediation planning.
+- Proposed monitoring and model-change controls.
+- Final model governance disposition.
 
-## 2. Model Inventory
+This framework demonstrates model risk management principles within an individual research project. It does not represent an operational governance program at a financial institution.
+
+## 2. Model Overview and Intended Use
+
+### 2.1 Model Inventory
 
 | Attribute | Description |
 |---|---|
 | Model Category | Mortgage Credit Risk |
-| Target | Observed 90+ day delinquency within 24 scheduled payment months |
-| Modeling Population | Freddie Mac 2007 mortgage cohort |
-| Baseline Model | Logistic Regression |
-| Challenger Models | Random Forest, XGBoost |
-| Development Environment | Python, DuckDB, scikit-learn, XGBoost |
-| Model Owner | Individual research project |
-| Model Status | Development and validation in progress |
-| Production Approval | Not granted |
+| Outcome | Observed serious delinquency (90+ days past due) |
+| Observation Horizon | First 24 scheduled payment months |
+| Data Source | Freddie Mac Single-Family Loan-Level Dataset |
+| Origination Cohorts | 2007 Q1–Q4 |
+| Primary Modeling Population | 888,123 mortgages |
+| Original Baseline | Six-feature Logistic Regression |
+| Final Interpretable Benchmark | Five-feature Logistic Regression |
+| Leading Research Candidate | XGBoost |
+| Additional Challenger | Random Forest |
+| Technology | Python, DuckDB, pandas, scikit-learn, XGBoost |
+| Project Ownership | Individual research project |
+| Production Status | Not approved |
 
-The outcome is a serious-delinquency proxy for default. The definition and treatment of early payoffs require further review before interpreting estimates as production-ready probabilities of default.
+The outcome serves as a serious-delinquency proxy for default.
 
-## 3. Model Risk Assessment
+The target definition remains provisional because early-payoff treatment, observation-history requirements, and population eligibility have not been fully resolved.
 
-| Risk Area | Identified Concern | Current Treatment |
-|---|---|---|
-| Data Quality | Incorrect or unmatched loan records | Automated integrity checks |
-| Target Definition | Early payoff and incomplete histories | Alternative target sensitivity analysis |
-| Population Risk | Nonrepresentative modeling sample | Exclusion and representativeness analysis |
-| Model Risk | Overfitting and inaccurate probabilities | Validation and calibration testing |
-| Feature Risk | Distribution shifts and correlated inputs | PSI, segment analysis, VIF |
-| Implementation Risk | Incorrect transformations or inconsistent preprocessing | Reproducible scripts and training-only preprocessing |
+### 2.2 Intended Use
 
-Risks remain subject to further assessment. Completion of a diagnostic does not imply the related risk has been resolved.
+The models are intended for:
 
-## 4. Model Validation Findings
+- Research and methodology evaluation.
+- Comparative statistical and machine learning analysis.
+- Quantitative model validation demonstrations.
+- Model risk management documentation.
+- Educational and professional portfolio presentation.
 
-| Finding | Description | Status |
-|---|---|---|
-| MV-001 | Sensitivity to early-payoff treatment | Open |
-| MV-002 | Potential population selection bias | Open |
-| MV-003 | Interest-rate distribution shift and calibration differences | Open |
-| MV-004 | LTV/CLTV multicollinearity and interpretability | Open |
+### 2.3 Prohibited or Unsupported Uses
 
-Detailed evidence and recommendations are maintained in [Model Validation](model_validation.md).
+The models are not suitable for:
 
-## 5. Model Selection and Approval Controls
-
-The final candidate model will be selected using evidence covering:
-
-- Discrimination: ROC-AUC and Average Precision
-- Probability accuracy: Brier Score and calibration
-- Stability across mortgage cohorts and risk segments
-- Interpretability and model complexity
-- Sensitivity to target and feature assumptions
-- Implementation reproducibility and documented limitations
-
-**Current decision:** No final model selected.
-
-XGBoost is the leading challenger on preliminary validation metrics. Five-feature Logistic Regression is a promising interpretable alternative.
-
-Model selection must be documented before the reserved Q4 test dataset is evaluated.
-
-
-### Pre-Test Model Selection Framework
-
-The following decision framework was established before
-evaluating the reserved 2007 Q4 test cohort.
-
-#### Selection Criteria
-
-| Area | Evaluation Standard |
-|---|---|
-| Discrimination | Compare ROC-AUC and Average Precision |
-| Calibration | Assess Brier Score and predicted vs. observed event rates |
-| Stability | Review performance across mortgage cohorts and risk segments |
-| Interpretability | Evaluate coefficient or feature-level explanations |
-| Robustness | Assess sensitivity to target and feature assumptions |
-| Complexity | Consider whether additional complexity is justified |
-
-No single metric automatically determines model selection.
-
-#### Provisional Candidate Models
-
-**Primary candidate: XGBoost**
-
-Selected for further evaluation because it achieved the
-strongest preliminary validation discrimination and
-Brier Score among the three developed algorithms.
-
-**Interpretable benchmark: Five-feature Logistic Regression**
-
-Retained because removing CLTV produced similar
-discrimination and calibration with a simpler specification.
-
-**Additional challenger: Random Forest**
-
-Retained as comparative evidence but not prioritized
-for final model selection.
-
-#### Final Evaluation Protocol
-
-1. Resolve or explicitly document material target-definition limitations.
-2. Freeze candidate specifications and preprocessing procedures.
-3. Evaluate the selected candidates on the reserved Q4 population.
-4. Report discrimination, calibration, and segment-level performance.
-5. Compare results against validation expectations.
-6. Document any unresolved findings and limitations.
-7. Issue a final research-model assessment.
-
-The Q4 test dataset must not be used for parameter tuning,
-feature selection, or repeated model optimization.
-
-If final evaluation identifies material deficiencies,
-the project will document them rather than claim approval.
-
-**Current decision: Provisional candidates identified;
-final research-model assessment pending.**
-
-
-## 6. Model Monitoring Framework
-
-A future monitoring framework will address:
-
-| Monitoring Area | Proposed Measure |
-|---|---|
-| Data Integrity | Missing fields, invalid values, duplicate loan identifiers |
-| Population Stability | Feature distributions and PSI |
-| Discrimination | ROC-AUC and Average Precision |
-| Calibration | Predicted versus observed event rates |
-| Segment Performance | Performance by borrower-risk and interest-rate groups |
-| Model Changes | Recorded changes to data, features, parameters, and code |
-
-Monitoring thresholds, escalation procedures, and retraining triggers will be developed as proposals, not represented as operational controls currently in force.
-
-## 7. Governance Decisions and Limitations
-
-The following decisions remain unresolved:
-
-1. Final 24-month outcome definition, including early-payoff treatment.
-2. Acceptable modeling-population exclusions.
-3. Whether to retain CLTV in the interpretable baseline.
-4. Final model selection among the candidate approaches.
-5. Acceptance criteria for final testing and material validation findings.
-
-The project does not have an independent validation department, formal approval committee, or operational monitoring system. Governance documentation illustrates a proposed process rather than claiming these organizational controls exist.
-
-## 8. Final Model Review Status
-
-**Decision: Pending**
-
-A final research-model assessment will require a documented target policy, completed validation analysis, a selected candidate specification, reserved Q4 evaluation, and explicit discussion of unresolved limitations.
+- Production lending or underwriting decisions.
+- Borrower eligibility determination.
+- Regulatory capital calculations.
+- Production probability-of-default estimation.
+- Operational credit risk reporting.
 
 No production approval or regulatory compliance certification is implied.
 
+## 3. Model Ownership and Governance Responsibilities
 
----
+In a financial institution, effective model governance would ordinarily require clearly assigned responsibilities for development, validation, approval, implementation, and ongoing monitoring.
 
-## 9. Final Governance Assessment
+The following responsibilities are proposed for a hypothetical operational framework.
 
-### 9.1 Final Model Evaluation
+| Function | Proposed Responsibility |
+|---|---|
+| Model Development | Develop methodology, maintain code, document assumptions and limitations |
+| Model Owner | Define intended use, oversee performance, coordinate remediation |
+| Independent Model Validation | Challenge model assumptions, assess performance and implementation |
+| Model Risk Management | Track material findings, assess model risk, advise on use restrictions |
+| Approval Authority | Decide whether model use is permissible under organizational policy |
+| Model Monitoring | Track performance, population changes, and potential deterioration |
 
-The final evaluation was conducted using the reserved
-2007 Q4 mortgage cohort.
+**Research-project limitation:** These are illustrative organizational responsibilities.
 
-| Metric | Logistic Regression | XGBoost |
+The project was completed by an individual. It does not have an independent validation department, formal approval committee, or operational monitoring function.
+
+Validation was conducted as a separate analytical workstream but was not organizationally independent.
+
+## 4. Model Risk Assessment
+
+The development and validation processes identified several sources of model risk.
+
+| Risk Area | Identified Concern | Evidence or Control |
+|---|---|---|
+| Data Quality | Invalid, unmatched, or duplicated mortgage records | Automated data integrity and reconciliation checks |
+| Target Definition | Early payoffs and incomplete observation histories | Alternative target sensitivity analysis |
+| Population Selection | Eligible modeling sample may be unrepresentative | Exclusion and representativeness analysis |
+| Model Specification | Overfitting or inappropriate assumptions | Challenger comparison and validation metrics |
+| Calibration | Predicted probabilities may differ materially from observed rates | Portfolio-level and decile-level calibration |
+| Feature Stability | Input distributions may shift between cohorts | Population Stability Index analysis |
+| Multicollinearity | Correlated predictors affect coefficient interpretation | Correlation, VIF, and feature-removal analysis |
+| Temporal Generalizability | Evidence is limited to 2007 origination cohorts | Explicit limitation in the validation assessment |
+| Implementation | Incorrect preprocessing or inconsistent transformations | Reproducible scripts and training-only preprocessing |
+
+Completion of a diagnostic does not mean the underlying risk has been eliminated.
+
+Material unresolved risks are documented in the validation findings register.
+
+## 5. Model Development and Validation Controls
+
+### 5.1 Development Controls
+
+The research workflow applied the following controls:
+
+- Consistent source-data ingestion and schema handling.
+- Automated data-integrity checks.
+- Documented target and population eligibility assumptions.
+- Mortgage origination-time predictor selection.
+- Training-only fitting of preprocessing transformations.
+- Chronological separation of training, validation, and test cohorts.
+- Comparison of interpretable and nonlinear modeling approaches.
+- Version-controlled Python scripts and documentation.
+
+### 5.2 Validation Controls
+
+Model validation included:
+
+- Population representativeness assessment.
+- Early-payoff sensitivity testing.
+- Model discrimination and probability calibration.
+- Feature distribution stability.
+- Multicollinearity and feature-reduction analysis.
+- Comparison of challenger models.
+- Frozen-model evaluation on a reserved test population.
+- Formal documentation of unresolved findings.
+
+### 5.3 Independence Limitation
+
+The validation workstream was separate from the development documentation, but both were conducted within the same individual research project.
+
+Consequently, the assessment does not satisfy the organizational independence expected of a formal independent model validation function.
+
+## 6. Model Selection and Final Testing
+
+### 6.1 Pre-Test Selection Framework
+
+Before evaluating the reserved Q4 cohort, model selection criteria were documented across six areas.
+
+| Criterion | Evaluation Consideration |
+|---|---|
+| Discrimination | ROC-AUC and Average Precision |
+| Calibration | Brier Score and predicted versus observed event rates |
+| Stability | Cohort and risk-segment performance |
+| Interpretability | Transparency of model outputs and risk factors |
+| Robustness | Sensitivity to assumptions and feature selection |
+| Complexity | Whether incremental performance justifies complexity |
+
+No single performance metric was designated as sufficient for model approval.
+
+### 6.2 Frozen Candidate Specifications
+
+Two models were selected for final held-out evaluation.
+
+**Candidate A — XGBoost**
+
+Selected as the leading research challenger based on Q3 validation performance.
+
+The final specification used six origination-time predictors, training-fitted median imputation, and boosting rounds selected using Q3 validation evidence.
+
+**Candidate B — Five-Feature Logistic Regression**
+
+Selected as the interpretable benchmark after feature-reduction testing showed similar validation performance without CLTV.
+
+The original six-feature baseline and Random Forest challenger remained available as development comparisons.
+
+### 6.3 Final Evaluation Protocol
+
+The evaluation protocol established that:
+
+1. Candidate specifications would be fixed before Q4 testing.
+2. Both candidates would be evaluated on the same eligible Q4 population.
+3. Discrimination and calibration metrics would be reported.
+4. Material weaknesses would be documented.
+5. Q4 results would not be used to retune model specifications.
+
+The methodology and results are recorded in [Final Test Protocol](final_test_protocol.md).
+
+## 7. Final Held-Out Evaluation
+
+### 7.1 Test Population
+
+| Measure | Value |
+|---|---:|
+| Origination Cohort | 2007 Q4 |
+| Eligible Mortgages | 211,425 |
+| Observed Serious-Delinquency Events | 20,176 |
+| Observed Event Rate | 9.54% |
+
+### 7.2 Model Performance
+
+| Metric | Five-Feature Logistic Regression | XGBoost |
 |---|---:|---:|
-| ROC-AUC | 0.7906 | 0.7956 |
-| Average Precision | 0.2910 | 0.3073 |
-| Brier Score | 0.0783 | 0.0774 |
+| ROC-AUC | 0.7906 | **0.7956** |
+| Average Precision | 0.2910 | **0.3073** |
+| Brier Score | 0.0783 | **0.0774** |
 | Average Predicted Event Rate | 6.39% | 6.39% |
 | Observed Event Rate | 9.54% | 9.54% |
 
-XGBoost demonstrated stronger discrimination and
-a slightly lower Brier Score.
+XGBoost achieved stronger discrimination and a slightly lower Brier Score.
 
-However, both models materially underestimated
-observed delinquency risk across all Q4 risk deciles.
+However, both models underestimated the observed event rate by approximately **3.15 percentage points**.
 
-### 9.2 Governance Disposition
+Underprediction occurred across all ten risk deciles for both models, including material errors in higher-risk groups.
 
-**Research assessment: Completed with material limitations**
+### 7.3 Governance Interpretation
 
-**Production recommendation: Not recommended**
+The evaluation supports the conclusion that XGBoost is the stronger research candidate for ranking mortgages by observed serious-delinquency risk.
 
-**Formal production approval: Not granted**
+It does not establish that XGBoost or Logistic Regression produces sufficiently reliable absolute probabilities for production credit risk estimation.
 
-The models demonstrate useful research-level
-risk-ranking capability but have not demonstrated
-sufficient probability calibration for production
-credit risk estimation.
+Good discrimination does not eliminate the need for acceptable calibration, defensible target assumptions, population representativeness, and appropriate model governance.
 
-This disposition represents the conclusion of an
-individual research project, not a decision by an
-independent bank model validation or approval function.
+No tuning or calibration adjustments were made using the reserved Q4 results.
 
-### 9.3 Remediation Action Plan
+## 8. Validation Findings Register
+
+Five validation findings remain open.
+
+| ID | Finding | Priority | Status |
+|---|---|---|---|
+| MV-001 | Sensitivity to early-payoff target treatment | High | Open |
+| MV-002 | Potential modeling-population selection bias | High | Open |
+| MV-003 | Interest-rate distribution shift and segment-level calibration differences | Medium | Open |
+| MV-004 | LTV/CLTV multicollinearity and coefficient interpretability | Medium | Open |
+| MV-005 | Systematic Q4 probability underprediction | High | Open |
+
+All findings are documented in detail in [Model Validation](model_validation.md).
+
+The priorities shown are proposed remediation priorities for the research project, not ratings issued by an independent model risk management function.
+
+An open finding indicates that the issue has been identified but not satisfactorily resolved.
+
+## 9. Remediation Action Plan
+
+The following actions are recommended before future consideration of production probability estimation.
 
 | Finding | Proposed Remediation | Priority |
 |---|---|---|
-| MV-001 | Review competing-risk treatment of early mortgage payoffs and finalize the target definition | High |
-| MV-002 | Investigate excluded loan populations and quantify selection bias | High |
-| MV-003 | Analyze interest-rate distribution shifts and assess performance across cohorts | Medium |
-| MV-004 | Evaluate coefficient stability and document the final LTV/CLTV feature decision | Medium |
-| MV-005 | Investigate calibration drift and develop a calibration improvement strategy using new development data | High |
+| MV-001 | Review early payoff as a competing event and finalize the outcome definition | High |
+| MV-002 | Assess excluded mortgage populations and establish defensible eligibility criteria | High |
+| MV-003 | Investigate interest-rate shifts and test model stability across broader origination cohorts | Medium |
+| MV-004 | Assess coefficient stability and document the final LTV/CLTV feature decision | Medium |
+| MV-005 | Investigate systematic underprediction and develop a calibration improvement strategy using new development data | High |
 
-### 9.4 Conditions for Reconsideration
+### 9.1 Remediation Principles
 
-Before a future model could be considered for
-production probability estimation, the following
-activities would be required:
+Future remediation should:
 
-1. Establish a defensible outcome definition,
-   including early-payoff treatment.
-2. Resolve or formally assess population-selection risks.
-3. Reassess model development with broader
-   origination vintages and economic conditions.
-4. Demonstrate acceptable discrimination and
-   probability calibration on independent data.
-5. Document feature selection and model stability.
-6. Define monitoring thresholds, escalation procedures,
-   and model-change controls.
-7. Obtain independent validation and appropriate
-   organizational approval.
+- Address the underlying modeling issue rather than merely improve a reported metric.
+- Preserve evidence of the original validation findings.
+- Document methodology and specification changes.
+- Distinguish development data from independent evaluation data.
+- Reassess performance using new, appropriate evaluation data.
+- Obtain independent review before any organizational production-use decision.
 
-The reserved Q4 test results will remain historical
-evaluation evidence and will not be used to optimize
-the existing models.
+The reserved Q4 cohort should remain historical final-test evidence for the frozen models rather than become an optimization dataset.
 
-### 9.5 Governance Conclusion
+### 9.2 Remediation Status
 
-The project demonstrates an end-to-end model risk
-management workflow covering:
+**Remediation actions are proposed but not completed.**
 
-- Model development and challenger comparison
-- Data quality and target-definition controls
-- Quantitative validation and sensitivity analysis
-- Identification and tracking of validation findings
-- Model-selection and testing protocols
-- Governance disposition and remediation planning
+The findings register therefore remains open.
 
-The most important conclusion is that satisfactory
-discrimination does not necessarily imply reliable
-probability estimates.
+## 10. Proposed Model Monitoring Framework
 
-The research models are retained for educational
-and methodological purposes only.
+The following framework describes how a future production model could be monitored if it were remediated, independently validated, and approved.
 
-**Final governance status: Research assessment completed;
-five findings remain open; production use not recommended.**
+| Monitoring Area | Proposed Measure | Purpose |
+|---|---|---|
+| Data Quality | Missingness, invalid values, duplicate identifiers | Detect input-data defects |
+| Population Stability | PSI and feature-distribution comparisons | Detect shifts in the modeled population |
+| Discrimination | ROC-AUC and Average Precision | Monitor risk-ranking ability |
+| Calibration | Predicted versus observed event rates | Assess probability reliability |
+| Segment Performance | Performance across borrower-risk and loan-characteristic groups | Identify concentrated model weaknesses |
+| Model Changes | Version and specification change logs | Maintain traceability |
+| Findings Management | Finding status, remediation evidence, and review outcomes | Track unresolved model risk |
+
+### 10.1 Monitoring Thresholds and Escalation
+
+Before operational deployment, an institution would need to define:
+
+- Monitoring frequency.
+- Metric-specific thresholds.
+- Materiality standards.
+- Escalation responsibilities.
+- Model-use restrictions.
+- Retraining or redevelopment triggers.
+- Documentation and approval requirements for model changes.
+
+These controls have not been implemented as operational monitoring processes in this research project.
+
+No specific thresholds are represented as approved or institutionally adopted.
+
+## 11. Final Governance Disposition
+
+### 11.1 Research Assessment
+
+The development and validation workstreams have completed their documented research assessment.
+
+The final evaluation demonstrated useful discriminatory performance but identified material calibration deficiencies.
+
+Five validation findings remain unresolved, including high-priority concerns involving target definition, population selection, and probability calibration.
+
+### 11.2 Final Recommendation
+
+**Research assessment:** Completed with material limitations.
+
+**Production recommendation:** Not recommended for production probability estimation.
+
+**Formal production approval:** Not granted.
+
+**Outstanding findings:** Five open.
+
+XGBoost remains the leading research candidate for risk ranking.
+
+The five-feature Logistic Regression remains the interpretable benchmark.
+
+Neither model should be represented as suitable for operational lending decisions, regulatory calculations, or production probability-of-default estimation.
+
+### 11.3 Conditions for Future Reconsideration
+
+Any future reconsideration would require:
+
+1. A defensible target definition and early-payoff methodology.
+2. Further assessment of population-selection and incomplete-history risks.
+3. Development and evaluation across broader origination vintages and economic environments.
+4. Evidence of acceptable probability calibration and discrimination.
+5. Documented feature-selection and model stability assessments.
+6. Defined monitoring, escalation, and model-change procedures.
+7. Organizationally independent validation and appropriate approval.
+
+These requirements describe a prospective governance process, not activities already completed by this project.
+
+## 12. Governance Conclusion
+
+The project demonstrates an end-to-end research workflow connecting:
+
+**Model Development → Model Validation → Validation Findings → Governance Assessment → Remediation Planning**
+
+Its central lesson is that **stronger discriminatory performance does not necessarily establish reliable probability estimation or justify model approval**.
+
+A credible model risk management assessment must consider the complete evidence, document unresolved risks, and recommend appropriate restrictions when material limitations remain.
+
+**Final governance status:** Research assessment completed; five validation findings open; production use not recommended.
+
+---
+
+*This framework is intended for research, education, and professional portfolio demonstration. It does not constitute a banking institution's formal governance approval, independent validation, or regulatory compliance certification.*
