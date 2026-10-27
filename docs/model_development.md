@@ -128,3 +128,85 @@ The baseline model demonstrates useful discriminatory ability on the validation 
 - Final test cohort not yet evaluated
 
 This assessment is preliminary and does not constitute production model approval.
+
+
+## 7. Challenger Model Development
+
+### Model Comparison
+
+Three algorithms were evaluated on the same 2007 Q3
+validation population of 188,212 mortgages.
+
+| Metric | Logistic Regression | Random Forest | XGBoost |
+|---|---:|---:|---:|
+| ROC-AUC | 0.7810 | 0.7816 | 0.7843 |
+| Average Precision | 0.2488 | 0.2518 | 0.2579 |
+| Brier Score | 0.0696 | 0.0693 | 0.0691 |
+| Average Predicted PD | 8.25% | 8.40% | 8.73% |
+
+Observed validation event rate: 8.35%.
+
+### Random Forest
+
+The Random Forest challenger used 100 trees, a maximum
+depth of 10, and a minimum leaf size of 100.
+
+It provided small improvements over Logistic Regression,
+but no substantial increase in discriminatory performance.
+
+### XGBoost
+
+XGBoost used gradient-boosted decision trees with
+regularization and validation-based early stopping.
+
+- Maximum boosting rounds: 400
+- Selected boosting round: 213
+- Maximum tree depth: 4
+- Learning rate: 0.05
+- Early stopping patience: 30 rounds
+
+XGBoost achieved the highest validation ROC-AUC,
+Average Precision, and lowest Brier Score.
+
+### Overfitting Assessment
+
+| Metric | ROC-AUC |
+|---|---:|
+| Training | 0.8054 |
+| Validation | 0.7843 |
+| Difference | 0.0211 |
+
+The observed gap is modest but does not rule out overfitting.
+Differences between origination cohorts may also contribute.
+
+### XGBoost Calibration
+
+Predicted risk generally tracked observed delinquency
+rates across validation risk deciles.
+
+In the highest-risk decile:
+
+- Actual event rate: 28.44%
+- Average predicted PD: 30.53%
+- Overprediction: 2.09 percentage points
+
+Additional calibration assessment is required.
+
+### Preliminary Model Selection
+
+XGBoost is the leading challenger based on validation
+performance. Logistic Regression remains the interpretable
+benchmark.
+
+No final model selection has been approved.
+
+Outstanding concerns include:
+
+- Unresolved mortgage histories and early-payoff treatment
+- Potential selection bias in the modeling population
+- Probability calibration and cohort stability
+- Hyperparameter-selection optimism
+- Model complexity and explainability
+- Independent validation and final test performance
+
+The 2007 Q4 test cohort remains reserved.

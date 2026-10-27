@@ -11,11 +11,13 @@ The objective is to develop a **Probability of Default (PD) model**, perform ind
 
 ## Explore the Project
 
+
 | Section | Description |
 |---|---|
-| [Model Development](docs/model_development.md) | Data preparation, feature engineering, modeling methodology, and results |
-| Model Validation | Coming soon |
+| [Model Development](docs/model_development.md) | Data preparation, feature engineering, model training, and performance |
+| [Model Validation](docs/model_validation.md) | Population analysis, sensitivity testing, calibration, and validation findings |
 | Model Governance | Coming soon |
+
 
 ## Baseline Model — Logistic Regression
 
